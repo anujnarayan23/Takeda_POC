@@ -18,7 +18,7 @@ jobs:
       - name: Cherry Pick Commit
         run: |
           # Cherry-pick the commit from the specified branch
-          git cherry-pick -x <commit-hash>
+          git cherry-pick -x f4bf509
           
       - name: Push Changes
         run: |
