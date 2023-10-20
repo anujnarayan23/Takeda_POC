@@ -1,26 +1,27 @@
-name: Merge Cherry Pick
+name: Cherry-Pick and Merge
 
 on:
   workflow_dispatch:
     inputs:
-      branch_to_cherry_pick:
-        description: 'Branch to cherry-pick from'
+      branch_name:
+        description: 'Name of the branch to cherry-pick from'
         required: true
 
 jobs:
-  merge_cherry_pick:
+  cherry_pick_and_merge:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Cherry Pick Commit
-        run: |
-          # Cherry-pick the commit from the specified branch
-          git cherry-pick -x f4bf509
-          
-      - name: Push Changes
-        run: |
-          # Push the cherry-picked commit to the main branch
-          git push origin main
+    - name: Cherry-Pick Commit
+      run: |
+        # Cherry-pick the commit from the specified branch
+        git cherry-pick d881204
+        # Handle any conflicts and complete the cherry-pick
+
+    - name: Push to Main
+      run: |
+        # Push the cherry-picked commit to the main branch
+        git push origin main
