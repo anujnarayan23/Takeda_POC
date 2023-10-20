@@ -18,6 +18,7 @@ jobs:
     - name: Cherry-Pick Commit
       run: |
         # Cherry-pick the commit from the specified branch
+        git log --all --grep='d881204'
         git cherry-pick d881204
         # Handle any conflicts and complete the cherry-pick
 
