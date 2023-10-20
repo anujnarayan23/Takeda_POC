@@ -1,14 +1,14 @@
-name: Cherry-Pick and Merge
+name: Merge Cherry-Pick to Main
 
 on:
   workflow_dispatch:
     inputs:
-      branch_name:
-        description: 'Name of the branch to cherry-pick from'
+      commit_hash:
+        description: 'Commit hash to cherry-pick'
         required: true
 
 jobs:
-  cherry_pick_and_merge:
+  merge_cherry_pick:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,10 +17,9 @@ jobs:
 
     - name: Cherry-Pick Commit
       run: |
-        # Cherry-pick the commit from the specified branch
-        git log --all --grep='d881204'
-        git cherry-pick 'd881204'
-        # Handle any conflicts and complete the cherry-pick
+        # Cherry-pick the specified commit from the Test branch
+        git cherry-pick ${{ github.event.inputs.commit_hash }}
+        # Handle any conflicts and continue the cherry-pick process
 
     - name: Push to Main
       run: |
