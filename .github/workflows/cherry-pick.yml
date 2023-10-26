@@ -73,4 +73,4 @@ jobs:
             echo "Failed to create pull request:"
             echo "$PR_RESPONSE"
             exit 1
-          }
+          fi
