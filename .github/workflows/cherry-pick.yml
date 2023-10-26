@@ -1,74 +1,71 @@
+---
 name: Automate PR with Cherry-Picked Commits
-
 on:
   workflow_dispatch:
     inputs:
       target_branch:
-        description: 'Target branch name'
+        description: Target branch name
         required: true
       feature_branch:
-        description: 'Feature branch name'
+        description: Feature branch name
         required: true
       commits_to_cherry_pick:
-        description: 'List of commit SHAs to cherry-pick (comma-separated)'
+        description: List of commit SHAs to cherry-pick (comma-separated)
         required: true
-
 jobs:
   create_branch:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check Out Code
         uses: actions/checkout@v2
-
       - name: Create Feature Branch
         run: |
-          #git pull
           git checkout -b ${{ inputs.feature_branch }}
           git push origin ${{ inputs.feature_branch }}
-
-#  cherry_pick:
- #   runs-on: ubuntu-latest
-
-#    steps:
       - name: Check Out Code
         uses: actions/checkout@v2
       - run: git config --global user.name "Anuj Narayan"
       - run: git config --global user.email "anujnarayan11@gmail.com"
       - run: git pull
       - run: git checkout ${{ inputs.feature_branch }}
-
       - name: Cherry-Pick Commits
         run: |
-         IFS=',' read -ra COMMITS <<< "${{ inputs.commits_to_cherry_pick }}"
-          for COMMIT in "${COMMITS[@]}"; do
-          #  git pull
-            git cherry-pick $COMMIT
-          done
+          IFS=',' read -ra COMMITS <<< "${{ inputs.commits_to_cherry_pick }}"
+           for COMMIT in "${COMMITS[@]}"; do
+             git cherry-pick $COMMIT
+           done
       - name: Push Changes
         run: |
           git push origin ${{ inputs.feature_branch }}
-
       - name: Create Pull Request
         env:
           TOKEN: ${{ secrets.TOKEN }}
-        run: |
+        run: >
           # Set up your GitHub repository details
+
           FEATURE_BRANCH="${{ inputs.feature_branch }}"
+
           BASE_BRANCH="${{ inputs.target_branch }}"
 
+
           # Define the API endpoint and data for the pull request
+
           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
+
           DATA='{
             "title": "Feature to Test PR",
             "head": "'"$FEATURE_BRANCH"'",
             "base": "'"$BASE_BRANCH"'"
           }'
 
+
           # Send a POST request to create the pull request
+
           PR_RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "$DATA" "$API_URL")
 
+
           # Check the response and handle errors
+
           if [[ "$(echo "$PR_RESPONSE" | jq -r '.url')" == "$API_URL" ]]; then
             PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number')
             echo "Pull request created successfully. PR Number: $PR_NUMBER"
@@ -76,21 +73,4 @@ jobs:
             echo "Failed to create pull request:"
             echo "$PR_RESPONSE"
             exit 1
-
-#  create_pr:
- #   runs-on: ubuntu-latest
-
- #   steps:
-  #    - name: Check Out Code
-   #     uses: actions/checkout@v2
-
-    #  - name: Create Pull Request
-     #   run: |
-      #    TITLE="Automated PR: Cherry-Picked Commits"
-       #   BODY="This PR was automatically created by GitHub Actions.\n\nCherry-picked commits: ${{ inputs.commits_to_cherry_pick }}"
-        #  GITHUB_PR_API="https://api.github.com/repos/${{ github.repository }}/pulls"
-         # DATA="{\"title\":\"$TITLE\",\"head\":\"${{ inputs.feature_branch }}\",\"base\":\"${{ inputs.target_branch }}\",\"body\":\"$BODY\"}"
-
-          #PR_URL=$(curl -X POST -H -d "$DATA" $GITHUB_PR_API | jq -r .html_url)
-
-          #echo "PR URL: $PR_URL"
+          }
