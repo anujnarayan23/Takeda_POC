@@ -1,0 +1,67 @@
+name: Automate PR with Cherry-Picked Commits
+
+ 
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch name'
+        required: true
+      feature_branch:
+        description: 'Feature branch name'
+        required: true
+      commits_to_cherry_pick:
+        description: 'List of commit SHAs to cherry-pick (comma-separated)'
+        required: true
+
+jobs:
+  create_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+
+      - name: Create Feature Branch
+        run: |
+          git checkout -b ${{ inputs.feature_branch }}
+          git push origin ${{ inputs.feature_branch }}
+
+  cherry_pick:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+
+      - name: Cherry-Pick Commits
+        run: |
+         IFS=',' read -ra COMMITS <<< "${{ inputs.commits_to_cherry_pick }}"
+          for COMMIT in "${COMMITS[@]}"; do
+            git cherry-pick $COMMIT
+          done
+
+  create_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Code
+        uses: actions/checkout@v2
+
+ 
+
+      - name: Push Changes
+        run: |
+          git push origin ${{ inputs.feature_branch }}
+
+      - name: Create Pull Request
+        run: |
+          TITLE="Automated PR: Cherry-Picked Commits"
+          BODY="This PR was automatically created by GitHub Actions.\n\nCherry-picked commits: ${{ inputs.commits_to_cherry_pick }}"
+          GITHUB_PR_API="https://api.github.com/repos/https://github.com/anujnarayan23/Takeda_POC/pulls"
+          DATA="{\"title\":\"$TITLE\",\"head\":\"${{ inputs.feature_branch }}\",\"base\":\"${{ inputs.target_branch }}\",\"body\":\"$BODY\"}"
+
+          PR_URL=$(curl -X POST -H -d "$DATA" $GITHUB_PR_API | jq -r .html_url)
+
+          echo "PR URL: $PR_URL"
