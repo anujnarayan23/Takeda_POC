@@ -1,7 +1,5 @@
 name: Automate PR with Cherry-Picked Commits
 
- 
-
 on:
   workflow_dispatch:
     inputs:
@@ -34,8 +32,8 @@ jobs:
     steps:
       - name: Check Out Code
         uses: actions/checkout@v2
+      - run: git config --global user.name "Anuj Narayan"
       - run: git config --global user.email "anujnarayan11@gmail.com"
-      - run: git config --global user.name "anujnarayan23"
 
       - name: Cherry-Pick Commits
         run: |
