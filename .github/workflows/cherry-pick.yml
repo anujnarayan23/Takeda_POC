@@ -40,6 +40,7 @@ jobs:
          IFS=',' read -ra COMMITS <<< "${{ inputs.commits_to_cherry_pick }}"
           for COMMIT in "${COMMITS[@]}"; do
             git cherry-pick $COMMIT
+            git cherry-pick --continue
           done
 
   create_pr:
