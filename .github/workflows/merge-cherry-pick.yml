@@ -18,6 +18,7 @@ jobs:
     - name: Cherry-Pick Commit
       run: |
         # Cherry-pick the specified commit from the Test branch
+        git pull
         git cherry-pick ${{ github.event.inputs.commit_hash }}
         # Handle any conflicts and continue the cherry-pick process
 
