@@ -14,6 +14,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - run: git config --global user.name "Anuj Narayan"
+    - run: git config --global user.email "anujnarayan11@gmail.com"
 
     - name: Cherry-Pick Commit
       run: |
