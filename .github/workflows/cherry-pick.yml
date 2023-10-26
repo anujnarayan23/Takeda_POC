@@ -53,7 +53,7 @@ jobs:
 
       - name: Push Changes
         run: |
-          git push origin ${{ inputs.target_branch }}
+          git push origin ${{ inputs.feature_branch }}
 
       - name: Create Pull Request
         run: |
