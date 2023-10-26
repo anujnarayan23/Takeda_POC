@@ -40,30 +40,22 @@ jobs:
       - name: Create Pull Request
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: >
+        run: |
           set -e
           # Set up your GitHub repository details
-
           FEATURE_BRANCH="${{ inputs.feature_branch }}"
-
           BASE_BRANCH="${{ inputs.target_branch }}"
 
-
           # Define the API endpoint and data for the pull request
-
           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
-
           DATA='{
             "title": "Feature to Test PR",
             "head": "'"$FEATURE_BRANCH"'",
             "base": "'"$BASE_BRANCH"'"
           }'
-
-
+          
           # Send a POST request to create the pull request
-
           PR_RESPONSE=$(curl -X POST -H "Authorization: token $PAT_TOKEN" -d "$DATA" "$API_URL")
-
 
           # Check the response and handle errors
 
