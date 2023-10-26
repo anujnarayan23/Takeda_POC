@@ -35,25 +35,25 @@ jobs:
         uses: actions/checkout@v2
       - run: git config --global user.name "Anuj Narayan"
       - run: git config --global user.email "anujnarayan11@gmail.com"
+      - run: git checkout ${{ inputs.feature_branch }}
 
       - name: Cherry-Pick Commits
         run: |
          IFS=',' read -ra COMMITS <<< "${{ inputs.commits_to_cherry_pick }}"
           for COMMIT in "${COMMITS[@]}"; do
-            git pull
+          #  git pull
             git cherry-pick $COMMIT
           done
-
-  create_pr:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v2
-
       - name: Push Changes
         run: |
           git push origin ${{ inputs.feature_branch }}
+
+#  create_pr:
+ #   runs-on: ubuntu-latest
+
+ #   steps:
+  #    - name: Check Out Code
+   #     uses: actions/checkout@v2
 
       - name: Create Pull Request
         run: |
