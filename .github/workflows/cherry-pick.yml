@@ -41,6 +41,7 @@ jobs:
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: >
+          set -e
           # Set up your GitHub repository details
 
           FEATURE_BRANCH="${{ inputs.feature_branch }}"
