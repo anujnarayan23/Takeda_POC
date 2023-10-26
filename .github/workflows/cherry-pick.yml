@@ -60,7 +60,7 @@ jobs:
         run: |
           TITLE="Automated PR: Cherry-Picked Commits"
           BODY="This PR was automatically created by GitHub Actions.\n\nCherry-picked commits: ${{ inputs.commits_to_cherry_pick }}"
-          GITHUB_PR_API="https://api.github.com/repos/https://github.com/anujnarayan23/Takeda_POC/pulls"
+          GITHUB_PR_API="https://api.github.com/repos/${{ github.repository }}/pulls"
           DATA="{\"title\":\"$TITLE\",\"head\":\"${{ inputs.feature_branch }}\",\"base\":\"${{ inputs.target_branch }}\",\"body\":\"$BODY\"}"
 
           PR_URL=$(curl -X POST -H -d "$DATA" $GITHUB_PR_API | jq -r .html_url)
