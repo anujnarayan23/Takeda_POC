@@ -49,6 +49,37 @@ jobs:
         run: |
           git push origin ${{ inputs.feature_branch }}
 
+      - name: Create Pull Request
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          # Set up your GitHub repository details
+          OWNER="Anuj Narayan"
+          REPO="${{ github.repository }}"
+          FEATURE_BRANCH="${{ inputs.feature_branch }}"
+          BASE_BRANCH="${{ inputs.target_branch }}"
+
+          # Define the API endpoint and data for the pull request
+          API_URL="https://api.github.com/repos/$OWNER/$REPO/pulls"
+          DATA='{
+            "title": "Feature to Test PR",
+            "head": "'"$FEATURE_BRANCH"'",
+            "base": "'"$BASE_BRANCH"'"
+          }'
+
+          # Send a POST request to create the pull request
+          PR_RESPONSE=$(curl -X POST -H "Authorization: token $TOKEN" -d "$DATA" "$API_URL")
+
+          # Check the response and handle errors
+          if [[ "$(echo "$PR_RESPONSE" | jq -r '.url')" == "$API_URL" ]]; then
+            PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number')
+            echo "Pull request created successfully. PR Number: $PR_NUMBER"
+          else
+            echo "Failed to create pull request:"
+            echo "$PR_RESPONSE"
+            exit 1
+          }
+
 #  create_pr:
  #   runs-on: ubuntu-latest
 
@@ -56,13 +87,13 @@ jobs:
   #    - name: Check Out Code
    #     uses: actions/checkout@v2
 
-      - name: Create Pull Request
-        run: |
-          TITLE="Automated PR: Cherry-Picked Commits"
-          BODY="This PR was automatically created by GitHub Actions.\n\nCherry-picked commits: ${{ inputs.commits_to_cherry_pick }}"
-          GITHUB_PR_API="https://api.github.com/repos/${{ github.repository }}/pulls"
-          DATA="{\"title\":\"$TITLE\",\"head\":\"${{ inputs.feature_branch }}\",\"base\":\"${{ inputs.target_branch }}\",\"body\":\"$BODY\"}"
+    #  - name: Create Pull Request
+     #   run: |
+      #    TITLE="Automated PR: Cherry-Picked Commits"
+       #   BODY="This PR was automatically created by GitHub Actions.\n\nCherry-picked commits: ${{ inputs.commits_to_cherry_pick }}"
+        #  GITHUB_PR_API="https://api.github.com/repos/${{ github.repository }}/pulls"
+         # DATA="{\"title\":\"$TITLE\",\"head\":\"${{ inputs.feature_branch }}\",\"base\":\"${{ inputs.target_branch }}\",\"body\":\"$BODY\"}"
 
-          PR_URL=$(curl -X POST -H -d "$DATA" $GITHUB_PR_API | jq -r .html_url)
+          #PR_URL=$(curl -X POST -H -d "$DATA" $GITHUB_PR_API | jq -r .html_url)
 
-          echo "PR URL: $PR_URL"
+          #echo "PR URL: $PR_URL"
