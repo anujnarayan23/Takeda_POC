@@ -27,10 +27,10 @@ jobs:
           git checkout -b ${{ inputs.feature_branch }}
           git push origin ${{ inputs.feature_branch }}
 
-  cherry_pick:
-    runs-on: ubuntu-latest
+#  cherry_pick:
+ #   runs-on: ubuntu-latest
 
-    steps:
+#    steps:
       - name: Check Out Code
         uses: actions/checkout@v2
       - run: git config --global user.name "Anuj Narayan"
