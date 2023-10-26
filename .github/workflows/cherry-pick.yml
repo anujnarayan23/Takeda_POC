@@ -23,7 +23,6 @@ jobs:
 
       - name: Create Feature Branch
         run: |
-          git checkout test
           git checkout -b ${{ inputs.feature_branch }}
           git push origin ${{ inputs.feature_branch }}
 
