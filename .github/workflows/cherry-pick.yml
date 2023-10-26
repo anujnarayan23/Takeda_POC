@@ -34,6 +34,8 @@ jobs:
     steps:
       - name: Check Out Code
         uses: actions/checkout@v2
+      - run: git config --global user.email "anujnarayan11@gmail.com"
+      - run: git config --global user.name "anujnarayan23"
 
       - name: Cherry-Pick Commits
         run: |
@@ -48,8 +50,6 @@ jobs:
     steps:
       - name: Check Out Code
         uses: actions/checkout@v2
-
- 
 
       - name: Push Changes
         run: |
