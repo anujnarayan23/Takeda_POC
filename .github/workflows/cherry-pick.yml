@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Create Feature Branch
         run: |
-          git checkout -b ${{ inputs.feature_branch }}
+          git checkout -b ${{ inputs.feature_branch }} ${{ inputs.target_branch }}
           git push origin ${{ inputs.feature_branch }}
       - name: Check Out Code
         uses: actions/checkout@v2
