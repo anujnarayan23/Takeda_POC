@@ -41,7 +41,7 @@ jobs:
           git push origin ${{ inputs.feature_branch }}
       - name: Create Pull Request
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          P_TOKEN: ${{ secrets.P_TOKEN }}
         run: |
           set -e
           # Set up your GitHub repository details
@@ -57,7 +57,7 @@ jobs:
           }'
           
           # Send a POST request to create the pull request
-          PR_RESPONSE=$(curl -X POST -H "Authorization: token $PAT_TOKEN" -d "$DATA" "$API_URL")
+          PR_RESPONSE=$(curl -X POST -H "Authorization: token $P_TOKEN" -d "$DATA" "$API_URL")
 
           # Check the response and handle errors
           echo "PR_RESPONSE=$PR_RESPONSE" >> PR_RESPONSE.env
