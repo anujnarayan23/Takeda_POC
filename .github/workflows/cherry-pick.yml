@@ -58,8 +58,12 @@ jobs:
           PR_RESPONSE=$(curl -X POST -H "Authorization: token $PAT_TOKEN" -d "$DATA" "$API_URL")
 
           # Check the response and handle errors
-
-          if [[ "$(echo "$PR_RESPONSE" | jq -r '.url')" == "$API_URL" ]]; then
+          echo "PR_RESPONSE=$PR_RESPONSE" >> PR_RESPONSE.env
+          cat PR_RESPONSE.env
+          PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number')
+          echo "PR NUMBER= $PR_NUMBER"
+          
+          if [[ "$(echo "$PR_RESPONSE" | jq -r '.url')" == "$API_URL/$PR_NUMBER" ]]; then
             PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number')
             echo "Pull request created successfully. PR Number: $PR_NUMBER"
           else
