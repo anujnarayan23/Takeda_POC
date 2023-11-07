@@ -1,5 +1,5 @@
 ---
-name: Automate PR with Cherry-Picked Commits
+name: Automate PR with Cherry-Picked Commits.
 on:
   workflow_dispatch:
     inputs:
@@ -20,12 +20,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Create Feature Branch
         run: |
-          git checkout -b ${{ inputs.feature_branch }}
+          BASE_BRANCH=${{ github.event.inputs.target_branch }}
+          git config --global user.name "Anuj Narayan"
+          git config --global user.email "anujnarayan11@gmail.com"
+          git pull
+          git checkout -b ${{ inputs.feature_branch }} origin/$BASE_BRANCH
           git push origin ${{ inputs.feature_branch }}
       - name: Check Out Code
         uses: actions/checkout@v2
-      - run: git config --global user.name "Anuj Narayan"
-      - run: git config --global user.email "anujnarayan11@gmail.com"
       - run: git pull
       - run: git checkout ${{ inputs.feature_branch }}
       - name: Cherry-Pick Commits
@@ -39,7 +41,7 @@ jobs:
           git push origin ${{ inputs.feature_branch }}
       - name: Create Pull Request
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          P_TOKEN: ${{ secrets.P_TOKEN }}
         run: |
           set -e
           # Set up your GitHub repository details
@@ -50,12 +52,12 @@ jobs:
           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
           DATA='{
             "title": "Feature to Test PR",
-            "head": "'"$FEATURE_BRANCH"'",
-            "base": "'"$BASE_BRANCH"'"
+            "head": "'"${{ github.event.inputs.feature_branch }}"'",
+            "base": "'"${{ github.event.inputs.target_branch }}"'"
           }'
           
           # Send a POST request to create the pull request
-          PR_RESPONSE=$(curl -X POST -H "Authorization: token $PAT_TOKEN" -d "$DATA" "$API_URL")
+          PR_RESPONSE=$(curl -X POST -H "Authorization: token $P_TOKEN" -d "$DATA" "$API_URL")
 
           # Check the response and handle errors
           echo "PR_RESPONSE=$PR_RESPONSE" >> PR_RESPONSE.env
