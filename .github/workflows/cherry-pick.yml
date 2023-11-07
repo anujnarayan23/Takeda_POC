@@ -1,5 +1,5 @@
 ---
-name: Automate PR with Cherry-Picked Commits
+name: Automate PR with Cherry-Picked Commits.
 on:
   workflow_dispatch:
     inputs:
