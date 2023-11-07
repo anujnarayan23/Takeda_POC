@@ -52,7 +52,7 @@ jobs:
           API_URL="https://api.github.com/repos/${{ github.repository }}/pulls"
           DATA='{
             "title": "Feature to Test PR",
-            "head": "'"${{ github.event.inputs.feature-branch }}"'",
+            "head": "'"${{ github.event.inputs.feature_branch }}"'",
             "base": "'"${{ github.event.inputs.target_branch }}"'"
           }'
           
